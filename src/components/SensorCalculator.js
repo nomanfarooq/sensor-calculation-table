@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import Select from 'react-select';
 import CalculationTable from './CalculationTable';
+import { InputText } from './partials/InputText';
 
 //Need this data via api
 const statusList = [
@@ -106,154 +107,187 @@ const select2Styles = {
 	},
 };
 
+const ActionButtons = ( {input, data, onCreate, onClear, editable} ) => {
+	return (
+		<>
+			<div className="flex flex-nowrap justify-end">
+				<Button
+					variant="link"
+					disabled={input}
+					className="p-0 text-primary"
+					onClick={() => onCreate()}>
+					Create
+				</Button>
+				
+				{!data?.length > 0 && (
+					<div className="ml-auto">
+						<Button
+							variant="link"
+							disabled={data?.length && editable}
+							className="p-0 text-primary"
+							onClick={() => onClear()}>
+							Clear
+						</Button>
+					</div>
+				)}
+			</div>
+		</>
+	);
+};
+
 const SensorCalculator = () => {
 	const [loading, setLoading] = useState(false);
 	const [inputType, setInputType] = useState('');
 	const [input, setInput] = useState('');
 	
+	const [filteredAnalogueTypesList, setFilteredAnalogueTypesList] = useState(analogueInputsTypes);
+	const [filteredAnalogueInputsList, setFilteredAnalogueInputsList] = useState([]);
+	const [record, setRecord] = useState(null);
+	const [editable, setEditable] = useState(true);
+	const [dataRow, setDataRow] = useState([]);
+	const [analogueInputType, setAnalogueInputType] = useState('');
+	const [analogueInput, setAnalogueInput] = useState({input1: ''});
+	const [inputData, setInputData] = useState([]);
+	const [sensorValue, setSensorValue] = useState();
+	const [sensorInputValue, setSensorInputValue] = useState(null);
+	const [bounds, setBounds] = useState({});
+	const [isValidSensVal, setIsValidSensVal] = useState(null);
+	
+	const onCreateRecord = () => {
+		setRecord(true);
+	};
+	
+	const onClearRecord = () => {
+		setInputData([]);
+	};
+	
+	const onResetRecord = () => {
+		setRecord(false);
+	};
+	
 	return (
 		<Container className="mt-5">
 			<h4>Sensor Calculator</h4>
 			<Row>
-				<Col md={4} className="text-start">
-					<Form>
-						<Form.Group className="mb-3" controlId="formBasicEmail">
-							<Form.Label>Select Type</Form.Label>
-							<Select
-								styles={select2Styles}
-								width="300px"
-								layout={'#F5F5F5'}
-								components={{IndicatorSeparator: () => null}}
-								isSearchable={true}
-								className="pr-4"
-								options={analogueInputsTypes}
-								value={analogueInputsTypes.find(item => item.value === inputType)}
-								onChange={( {value = null} ) => {
-									setInputType(value);
-									//onUpdateOnlineStatus(value);
-								}}
-							/>
-						</Form.Group>
-					</Form>
-				</Col>
-				<Col md={4} className="text-start">
-					<Form>
-						<Form.Group className="mb-3" controlId="formBasicEmail">
-							<Form.Label>Select Input</Form.Label>
-							<Select
-								styles={select2Styles}
-								width="300px"
-								layout={'#F5F5F5'}
-								components={{IndicatorSeparator: () => null}}
-								isSearchable={true}
-								className="pr-4"
-								options={analogueInputs}
-								value={analogueInputs.find(item => item.value === input)}
-								onChange={( {value = null} ) => {
-									setInput(value);
-									//onUpdateOnlineStatus(value);
-								}}
-							/>
-						</Form.Group>
-					</Form>
-				</Col>
-				<Col md={4} className="text-start">
-					<Form>
-						<Form.Group className="mb-3" controlId="formBasicEmail">
-							<Form.Label>Sensor Value</Form.Label>
-							<Form.Control type="text" placeholder="Sensor value"/>
-							<Form.Text className="text-muted">
-								We'll never share your email with anyone else.
-							</Form.Text>
-						</Form.Group>
-					</Form>
-				</Col>
-			</Row>
-			<Row>
-				<Col md={4} className="text-start">
-					<Form>
-						<Form.Group className="mb-3" controlId="lowerBoundPre">
-							<Form.Label>Lower Bound</Form.Label>
-							<Form.Control type="text" placeholder="1000" disabled={true}/>
-							<Form.Text className="text-muted">
-								We'll never share your email with anyone else.
-							</Form.Text>
-						</Form.Group>
-					</Form>
-				</Col>
-				<Col md={4} className="text-start">
-					<Form>
-						<Form.Group className="mb-3" controlId="upperBoundPre">
-							<Form.Label>Upper Bound</Form.Label>
-							<Form.Control type="text" placeholder="45000" disabled={true}/>
-							<Form.Text className="text-muted">
-								We'll never share your email with anyone else.
-							</Form.Text>
-						</Form.Group>
-					</Form>
-				</Col>
-				<Col md={4} className="text-start">
-					<Form>
-						<Form.Group className="mb-3" controlId="preSensorValue">
-							<Form.Label>Previous Sensor Value</Form.Label>
-							<Form.Control type="text" placeholder="17000" disabled={true}/>
-							<Form.Text className="text-muted">
-								We'll never share your email with anyone else.
-							</Form.Text>
-						</Form.Group>
-					</Form>
-				</Col>
-			</Row>
-			<Row>
-				<Col md={2}>
-					<h4>Calculation Table</h4>
-				</Col>
-				<Col md={6}>
-					<div className="d-flex flex-nowrap justify-content-center align-content-center">
-						<Form className="text-start">
-							<Form.Group className="mb-3" controlId="lowerBoundPre">
-								<Form.Label>Lower Bound</Form.Label>
-								<Form.Control type="text" placeholder="1000"/>
-								<Form.Text className="text-muted">
-									Anyone else.
-								</Form.Text>
+				<Col md={5} className="text-start">
+					<div className="d-flex flex-nowrap">
+						<Form>
+							<Form.Group className="mb-3" controlId="formBasicEmail">
+								<Form.Label>Select Type</Form.Label>
+								<Select
+									styles={select2Styles}
+									width="300px"
+									layout={'#F5F5F5'}
+									components={{IndicatorSeparator: () => null}}
+									isSearchable={true}
+									className="pr-4"
+									options={analogueInputsTypes}
+									value={analogueInputsTypes.find(item => item.value === inputType)}
+									onChange={( {value = null} ) => {
+										setInputType(value);
+										//onUpdateOnlineStatus(value);
+									}}
+								/>
 							</Form.Group>
 						</Form>
-						<div className="ml-auto">
-							<Form className="text-start">
-								<Form.Group className="mb-3" controlId="upperBoundPre">
-									<Form.Label>Upper Bound</Form.Label>
-									<Form.Control type="text" placeholder="45000"/>
-									<Form.Text className="text-muted">
-										We'll never.
-									</Form.Text>
+						<div className="ml-4">
+							<Form>
+								<Form.Group className="mb-3" controlId="formBasicEmail">
+									<Form.Label>Select Input</Form.Label>
+									<Select
+										styles={select2Styles}
+										width="300px"
+										layout={'#F5F5F5'}
+										components={{IndicatorSeparator: () => null}}
+										isSearchable={true}
+										className="pr-4"
+										options={analogueInputs}
+										value={analogueInputs.find(item => item.value === input)}
+										onChange={( {value = null} ) => {
+											setInput(value);
+											//onUpdateOnlineStatus(value);
+										}}
+									/>
 								</Form.Group>
 							</Form>
 						</div>
 					</div>
 				</Col>
-				<Col md={2}>
-					<Form className="text-start">
-						<Form.Group className="mb-3" controlId="upperBoundPre">
-							<Form.Label>Correct Calculated</Form.Label>
-							<Form.Control type="text" placeholder="45000"/>
-							<Form.Text className="text-muted">
-								We'll never.
-							</Form.Text>
-						</Form.Group>
-					</Form>
+				<Col md={4} className="text-start">
+					<InputText
+						id="sensorVal"
+						inputFormat="number"
+						isEnable={false}
+						label={'Sensor Value'}
+						placeholder={10000}
+						value={sensorValue}
+						isImportant={true}
+						onChange={( e ) => {
+							console.log(e.target.value);
+						}}/>
 				</Col>
-				<Col md={2}>
-					<div className="d-flex flex-nowrap">
-						<Button variant="outline-dark">Calculate</Button>
-						<div className="ml-auto">
-							<Button variant="success">Save</Button>
-						</div>
-					</div>
+				<Col md={3} className="text-start">
+					<ActionButtons
+						input={analogueInput?.input1}
+						data={inputData}
+						onCreate={() => onCreateRecord()}
+						onClear={onClearRecord}
+						editable={editable}/>
 				</Col>
 			</Row>
 			<Row>
-				<CalculationTable/>
+				<Col md={4} className="text-start">
+					<InputText
+						id="lowerBoundPre"
+						inputFormat="number"
+						isEnable={true}
+						label={'Lower Bound'}
+						placeholder={5000}
+						value={bounds?.lower}
+						isImportant={true}
+						onChange={( e ) => {
+							console.log(e.target.value);
+						}}/>
+				</Col>
+				<Col md={4} className="text-start">
+					<InputText
+						id="upperBoundPre"
+						inputFormat="number"
+						isEnable={true}
+						label={'Upper Bound'}
+						placeholder={45000}
+						value={bounds?.upper}
+						isImportant={true}
+						onChange={( e ) => {
+							console.log(e.target.value);
+						}}/>
+				</Col>
+				<Col md={4} className="text-start">
+					<InputText
+						id="preSensorValue"
+						inputFormat="number"
+						isEnable={true}
+						label={'Previous Sensor Value'}
+						placeholder={17000}
+						value={sensorValue}
+						isImportant={true}
+						onChange={( e ) => {
+							console.log(e.target.value);
+						}}/>
+				</Col>
+			</Row>
+			<Row>
+				<CalculationTable
+					type={analogueInputType}
+					input={analogueInput?.input1}
+					create={record}
+					onResetRec={onResetRecord}
+					inputsData={inputData}
+					sensorVal={sensorValue}
+					editable={editable}
+					boundValues={bounds}
+					onData={( data ) => setDataRow(data)}
+					onSensorValueInput={( data ) => setSensorInputValue(data)}/>
 			</Row>
 		</Container>
 	);

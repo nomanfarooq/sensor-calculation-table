@@ -131,7 +131,6 @@ export default function AnalogueInputTable({
         //onCreateData();
     }, [input])
 
-
     useEffect(() => {
         console.log(dataRow, 'dataRow record updated');
         props?.onData(dataRow);
