@@ -235,47 +235,51 @@ const SensorCalculator = () => {
 						editable={editable}/>
 				</Col>
 			</Row>
-			<Row>
-				<Col md={4} className="text-start">
-					<InputText
-						id="lowerBoundPre"
-						inputFormat="number"
-						isEnable={true}
-						label={'Lower Bound'}
-						placeholder={5000}
-						value={bounds?.lower}
-						isImportant={true}
-						onChange={( e ) => {
-							console.log(e.target.value);
-						}}/>
-				</Col>
-				<Col md={4} className="text-start">
-					<InputText
-						id="upperBoundPre"
-						inputFormat="number"
-						isEnable={true}
-						label={'Upper Bound'}
-						placeholder={45000}
-						value={bounds?.upper}
-						isImportant={true}
-						onChange={( e ) => {
-							console.log(e.target.value);
-						}}/>
-				</Col>
-				<Col md={4} className="text-start">
-					<InputText
-						id="preSensorValue"
-						inputFormat="number"
-						isEnable={true}
-						label={'Previous Sensor Value'}
-						placeholder={17000}
-						value={sensorValue}
-						isImportant={true}
-						onChange={( e ) => {
-							console.log(e.target.value);
-						}}/>
-				</Col>
-			</Row>
+			
+			{inputData?.length > 0 && (
+				<Row>
+					<Col md={4} className="text-start">
+						<InputText
+							id="lowerBoundPre"
+							inputFormat="number"
+							isEnable={true}
+							label={'Lower Bound'}
+							placeholder={5000}
+							value={bounds?.lower}
+							isImportant={true}
+							onChange={( e ) => {
+								console.log(e.target.value);
+							}}/>
+					</Col>
+					<Col md={4} className="text-start">
+						<InputText
+							id="upperBoundPre"
+							inputFormat="number"
+							isEnable={true}
+							label={'Upper Bound'}
+							placeholder={45000}
+							value={bounds?.upper}
+							isImportant={true}
+							onChange={( e ) => {
+								console.log(e.target.value);
+							}}/>
+					</Col>
+					<Col md={4} className="text-start">
+						<InputText
+							id="preSensorValue"
+							inputFormat="number"
+							isEnable={true}
+							label={'Previous Sensor Value'}
+							placeholder={17000}
+							value={sensorValue}
+							isImportant={true}
+							onChange={( e ) => {
+								console.log(e.target.value);
+							}}/>
+					</Col>
+				</Row>
+			)}
+			
 			<Row>
 				<CalculationTable
 					type={analogueInputType}

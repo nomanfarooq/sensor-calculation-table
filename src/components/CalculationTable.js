@@ -275,14 +275,59 @@ function CalculationTable ( {type, input, create, onResetRec, inputsData, sensor
 						<tbody>
 						{dataRow?.map(( item, idx ) => (
 							<tr key={idx}>
-								<td>{item.x}</td>
-								<td>{item.y}</td>
-								<td>{item.a}</td>
-								<td>{item.b}</td>
-								<td><Button variant="link" onClick={( e ) => {
-									e.preventDefault();
-									onEnable(idx, dataRow);
-								}}>Enable</Button> | <Button variant="link" onClick={( e ) => {
+								<td style={{width: '15%'}}>
+									{((item?.isEdit ?? false) || item?.isEdit)
+										? <InputText helperText="" id="x-req" value={item.x} disabled={true}/>
+										: <InputText
+											inputFormat="number"
+											helperText=""
+											id="x-required"
+											value={item.x}
+											disabled={item?.isEdit}
+											onChange={( event ) => {
+												dataRow[idx] = {
+													...dataRow[idx],
+													x: event?.target?.value,
+												};
+												setXyVal(value => ({
+													...value,
+													x: event?.target?.value,
+												}));
+											}}/>
+									}
+								</td>
+								<td style={{width: '15%'}}>
+									{((item?.isEdit ?? false) || item?.isEdit)
+										? <InputText helperText="" id="y-req" value={item.y} disabled={true}/>
+										: <InputText
+											inputFormat="number"
+											helperText=""
+											id="y-required"
+											value={item.y}
+											disabled={item?.isEdit}
+											onChange={( event ) => {
+												dataRow[idx] = {
+													...dataRow[idx],
+													y: event?.target?.value,
+												};
+												setXyVal(value => ({
+													...value,
+													y: event?.target?.value,
+												}));
+											}}/>
+									}</td>
+								<td style={{width: '15%'}}>
+									<InputText helperText="" id="a-req" value={item.a} disabled={true}/>
+								</td>
+								<td style={{width: '15%'}}>
+									<InputText helperText="" id="b-req" value={item.b} disabled={true}/>
+								</td>
+								<td style={{width: '15%'}}>
+									<Button variant="link" onClick={( e ) => {
+										e.preventDefault();
+										onEnable(idx, dataRow);
+									}}>{(item?.isEdit ? `Enable` : `Disable`)}
+									</Button> | <Button variant="link" onClick={( e ) => {
 									e.preventDefault();
 									onRemoveValues(idx, dataRow);
 								}}>Remove</Button></td>
