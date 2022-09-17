@@ -241,21 +241,25 @@ function CalculationTable ( {type, input, create, onResetRec, inputsData, sensor
 							</div>
 						</Col>
 						<Col md={2}>
-							<InputText
-								id="CalculatedSensorValue"
-								inputFormat="number"
-								isEnable={true}
-								label={'Correct Calculated'}
-								placeholder={17000}
-								value={sensorValue}
-								isImportant={true}
-								onChange={( e ) => {
-									console.log(e.target.value);
-								}}/>
+							{sensorValue && (
+								<InputText
+									id="CalculatedSensorValue"
+									inputFormat="number"
+									isEnable={true}
+									isValid={isValidSensVal}
+									label={(isValidSensVal ? 'Correct' : 'Incorrect')}
+									helperText={'Calculated sensor value'}
+									placeholder={17000}
+									value={sensorValue}
+									isImportant={true}
+									onChange={( e ) => {
+										console.log(e.target.value);
+									}}/>
+							)}
 						</Col>
 						<Col md={2}>
 							<div className="d-flex flex-nowrap">
-								<Button variant="outline-dark">Calculate</Button>
+								<Button variant="outline-dark" onClick={() => onCalculation(inputsData)}>Calculate</Button>
 								<div className="ml-auto">
 									<Button variant="success">Save</Button>
 								</div>
