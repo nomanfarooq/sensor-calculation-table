@@ -108,7 +108,7 @@ const select2Styles = {
 };
 
 const inputsApiData = [
-	{
+	/*{
 		type: 'analogue-input-1', input: 'load', sensorValue: 17000, bounds: {lower: 1000, upper: 450000},
 		data: [
 			{
@@ -136,7 +136,7 @@ const inputsApiData = [
 				'b': '',
 			},
 		],
-	},
+	},*/
 	{
 		type: 'analogue-input-3', input: 'fllvl', sensorValue: 3000, bounds: {lower: 10, upper: 4500},
 		data: [
@@ -280,11 +280,10 @@ const ActionButtons = ( {input, data, onCreate, onClear, editable} ) => {
 				</li>
 			</ul>
 		</>
-);
+	);
 };
 
-const SensorCalculator = () =>
-	{
+const SensorCalculator = () => {
 		const [loading, setLoading] = useState(false);
 		const [inputType, setInputType] = useState('');
 		const [input, setInput] = useState('');
@@ -296,7 +295,7 @@ const SensorCalculator = () =>
 		const [analogueInputType, setAnalogueInputType] = useState('');
 		const [analogueInput, setAnalogueInput] = useState({input1: ''});
 		const [inputData, setInputData] = useState([]);
-		const [sensorValue, setSensorValue] = useState();
+		const [sensorValue, setSensorValue] = useState(null);
 		const [sensorInputValue, setSensorInputValue] = useState(null);
 		const [bounds, setBounds] = useState({});
 		const [dataRow, setDataRow] = useState([]);
@@ -430,11 +429,12 @@ const SensorCalculator = () =>
 								inputFormat="number"
 								isEnable={false}
 								label={'Sensor Value'}
-								placeholder={10000}
-								value={sensorValue}
+								placeholder={14870}
+								value={sensorValue ?? ''}
 								isImportant={true}
 								onChange={( e ) => {
 									console.log(e.target.value);
+									setSensorValue(e.target.value);
 								}}/>
 						)}
 					</Col>
@@ -457,7 +457,7 @@ const SensorCalculator = () =>
 								isEnable={true}
 								label={'Lower Bound'}
 								placeholder={5000}
-								value={bounds?.lower}
+								value={bounds?.lower ?? ''}
 								isImportant={true}
 								onChange={( e ) => {
 									console.log(e.target.value);
@@ -470,7 +470,7 @@ const SensorCalculator = () =>
 								isEnable={true}
 								label={'Upper Bound'}
 								placeholder={45000}
-								value={bounds?.upper}
+								value={bounds?.upper ?? ''}
 								isImportant={true}
 								onChange={( e ) => {
 									console.log(e.target.value);
@@ -483,7 +483,7 @@ const SensorCalculator = () =>
 								isEnable={true}
 								label={'Previous Sensor Value'}
 								placeholder={17000}
-								value={sensorValue}
+								value={sensorValue ?? ''}
 								isImportant={true}
 								onChange={( e ) => {
 									console.log(e.target.value);
@@ -492,7 +492,7 @@ const SensorCalculator = () =>
 					</Row>
 				)}
 				
-				<Row>
+					<Row>
 					<CalculationTable
 						type={analogueInputType}
 						input={analogueInput?.input1}

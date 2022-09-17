@@ -217,25 +217,25 @@ function CalculationTable ( {type, input, create, onResetRec, inputsData, sensor
 								<InputText
 									id="lowerBoundPre"
 									inputFormat="number"
-									isEnable={true}
+									isEnable={editable}
 									label={'Lower Bound'}
 									placeholder={5000}
-									value={bounds?.lower}
+									value={bounds?.lower ?? ''}
 									isImportant={true}
 									onChange={( e ) => {
-										console.log(e.target.value);
+										setBounds(state => ({...state, lower: e.target.value}));
 									}}/>
 								<div className="ml-auto">
 									<InputText
 										id="upperBoundPre"
 										inputFormat="number"
-										isEnable={true}
+										isEnable={editable}
 										label={'Upper Bound'}
 										placeholder={45000}
-										value={bounds?.upper}
+										value={bounds?.upper ?? ''}
 										isImportant={true}
 										onChange={( e ) => {
-											console.log(e.target.value);
+											setBounds(state => ({...state, upper: e.target.value}));
 										}}/>
 								</div>
 							</div>
@@ -250,7 +250,7 @@ function CalculationTable ( {type, input, create, onResetRec, inputsData, sensor
 									label={(isValidSensVal ? 'Correct' : 'Incorrect')}
 									helperText={'Calculated sensor value'}
 									placeholder={17000}
-									value={sensorValue}
+									value={sensorValue ?? ''}
 									isImportant={true}
 									onChange={( e ) => {
 										console.log(e.target.value);
@@ -281,12 +281,12 @@ function CalculationTable ( {type, input, create, onResetRec, inputsData, sensor
 							<tr key={idx}>
 								<td style={{width: '15%'}}>
 									{((item?.isEdit ?? false) || item?.isEdit)
-										? <InputText helperText="" id="x-req" value={item.x} disabled={true}/>
+										? <InputText helperText="" id="x-req" value={item.x ?? ''} disabled={true}/>
 										: <InputText
 											inputFormat="number"
 											helperText=""
 											id="x-required"
-											value={item.x}
+											value={item.x ?? ""}
 											disabled={item?.isEdit}
 											onChange={( event ) => {
 												dataRow[idx] = {
@@ -302,12 +302,12 @@ function CalculationTable ( {type, input, create, onResetRec, inputsData, sensor
 								</td>
 								<td style={{width: '15%'}}>
 									{((item?.isEdit ?? false) || item?.isEdit)
-										? <InputText helperText="" id="y-req" value={item.y} disabled={true}/>
+										? <InputText helperText="" id="y-req" value={item.y ?? ''} disabled={true}/>
 										: <InputText
 											inputFormat="number"
 											helperText=""
 											id="y-required"
-											value={item.y}
+											value={item.y ?? ""}
 											disabled={item?.isEdit}
 											onChange={( event ) => {
 												dataRow[idx] = {
@@ -321,10 +321,10 @@ function CalculationTable ( {type, input, create, onResetRec, inputsData, sensor
 											}}/>
 									}</td>
 								<td style={{width: '15%'}}>
-									<InputText helperText="" id="a-req" value={item.a} disabled={true}/>
+									<InputText helperText="" id="a-req" value={item.a ?? ''} disabled={true}/>
 								</td>
 								<td style={{width: '15%'}}>
-									<InputText helperText="" id="b-req" value={item.b} disabled={true}/>
+									<InputText helperText="" id="b-req" value={item.b ?? ''} disabled={true}/>
 								</td>
 								<td style={{width: '15%'}}>
 									<Button variant="link" onClick={( e ) => {

@@ -7,9 +7,12 @@ export const InputText = ( {id, label, inputFormat, value, placeholder, isValid,
 			<Form.Group className="mb-3" controlId={id}>
 				<Form.Label className={isValid && 'text-success'}>{label} {isImportant && <span className="text-danger">*</span>}</Form.Label>
 				<Form.Control type={inputFormat ?? 'text'} value={value} placeholder={placeholder} disabled={isEnable} onChange={onChange}/>
-				<Form.Text className="text-muted">
-					{`${helperText ?? `Some helper text.....`}`}
-				</Form.Text>
+				{helperText && (
+					<Form.Text className="text-muted">
+						{`${helperText}`}
+					</Form.Text>
+				)}
+			
 			</Form.Group>
 		</Form>
 	);
